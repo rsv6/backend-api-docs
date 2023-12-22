@@ -1,50 +1,55 @@
 import { PrismaClient } from "@prisma/client"
 
-export class PermissaoRepository {
+export class UsuarioRepository {
     
     private prisma: PrismaClient = new PrismaClient(); 
 
-    public async pegarPermissao(): Promise<any> {
+    public async signIn(email: string, senha: string): Promise<any> {
+        try {
+            const result: any = await this.prisma.$queryRaw`
+                SELECT 
+                    u.id as id,
+                    u.nome as nome,
+                    u.email as email,
+                    g.nome as grupo,
+                    --CONCAT(ISNULL(a.LER, ''),',', ISNULL(a.ESCREVER, '')) AS acesso
+                    ISNULL(a.LER, '') AS ler,
+                    ISNULL(a.ESCREVER, '') AS escrever
+                FROM 
+                    PERMISSAO_GRUPO pg
+                    INNER JOIN USUARIO u 
+                        ON pg.id_usuario = u.id  
+                    INNER JOIN GRUPO g
+                        ON pg.id_grupo = g.id
+                    INNER JOIN ACESSO a
+                        ON pg.id_acesso = a.id
+                WHERE 
+                    u.email = ${email}
+                    AND u.senha = ${senha}
+            `
+            return result;
+        } catch (error) {
+            console.log('Error exception: ', error);
+            return null;
+        }
+    }
 
-        return await this.prisma.$queryRaw`
-            SELECT 
-                u.id,
-                MAX(u.nome) AS NOME,
-                MAX(u.email) AS EMAIL,
-                --MAX(u.senha) AS SENHA,
-                STRING_AGG(n.nome, ',') as nivel,
-                MAX(u.dt_criacao) AS DTCRIACAO,
-                MAX(u.dt_atualizacao) AS DTATUALIZACAO
-            FROM PERMISSAO p
-                INNER JOIN USUARIO u
-                    ON p.id_user = u.id
-                INNER JOIN NIVEL n
-                    ON p.id_nivel = n.id
-            WHERE 
-                u.email = 'rafael@email.com'
-                AND u.senha = '123456'
-            GROUP BY u.id 
-        `
+    public async pegarUsuarios(): Promise<any> {
+        try {
+            const result = await this.prisma.uSUARIO.findMany({
+                select: {
+                    id: true,
+                    nome: true,
+                    email: true,
+                    dtcriacao: true,
+                    dtatualizacao: true
+                }
+            });
 
-        // return await this.prisma.pERMISSAO.findMany({
-        //     select: {
-        //         USUARIO: {
-        //             select: {
-        //                 nome: true
-        //             },
-        //         },
-        //         NIVEL: {
-        //             select: {
-        //                 nome: true
-        //             }
-        //         },
-        //     },
-        //     where: {
-        //         USUARIO: {
-        //             email: "rafael@email.com",
-        //             senha: "123456",
-        //         }
-        //     }
-        // })
+            return result;
+        } catch(error) {
+            console.log('Error exception: ', error);
+            return null;
+        }
     }
 }
