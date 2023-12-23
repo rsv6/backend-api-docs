@@ -1,9 +1,12 @@
 import express, { Router } from 'express';
 import { UsuarioController } from './controllers/Permissao.Controller';
 import { JWT } from './services/JWT';
+import { arrG } from './services/validaAcesso';
 
 const app = express();
 app.use(express.json());
+
+arrG;
 
 app.use(
     Router()
