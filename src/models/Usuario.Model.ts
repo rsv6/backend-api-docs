@@ -2,6 +2,10 @@
 
 export class UsuarioModel {
 
-    public nome: string = "";
-    public email: string = ""; 
+    public id?: number;
+    public nome?: string;
+    public email?: string;
+    public senha?: string | undefined;
+    public dtcriacao?: Date;
+    public dtatualizacao?: Date;
 }

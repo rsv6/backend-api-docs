@@ -1,5 +1,3 @@
-import { Request } from "express";
-
 
 export interface IUserToken {
     id: number | undefined;
@@ -19,6 +17,14 @@ export interface IUserDtoInput {
     escrever: string;
     dtAtualizacao: string;
 }
+
+export interface IUserDtoOutput {
+    id: number;
+    nome: string;
+    email: string;
+    dtcriacao: string;
+    dtatualizacao: string;
+};
 
 
 // export interface IRequest extends Request {

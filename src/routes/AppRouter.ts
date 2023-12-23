@@ -7,9 +7,23 @@ export class AppRouter {
 
     private usuarioRoutes() {
         return this.router
-            .post('/usuario/criar', UsuarioController.criarUsuario)
-            .post('/usuario', UsuarioController.signIn)
-            .get('/usuario', new JWT().verificaToken ,UsuarioController.pegaUsuarios)
+            .post(
+                '/usuario/criar', 
+                UsuarioController.criaUsuario
+            )
+            .post(
+                '/usuario', 
+                UsuarioController.signIn
+            )
+            .get(
+                '/usuario',
+                // new JWT().verificaToken,
+                UsuarioController.pegaUsuarios
+            )
+            .get(
+                '/usuario/:id',
+                UsuarioController.pegaUsuarioPorId
+            )
             
     }
 

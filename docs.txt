@@ -1,6 +1,7 @@
 ## Manager Docs:
 
 - Validar campos com zod
+- Criar valdicao se ja existe email cadastrado
 - Validar grupo ADMIN para rotas de criacao de usuario
 - Criar metodo de pegar permissoes dos grupos no banco
 - Criar lógica para validar permissao de grupo para rotas
