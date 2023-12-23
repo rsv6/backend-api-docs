@@ -1,5 +1,10 @@
 ## Manager Docs:
 
+- Validar campos com zod
+- Validar grupo ADMIN para rotas de criacao de usuario
+- Criar metodo de pegar permissoes dos grupos no banco
+- Criar lógica para validar permissao de grupo para rotas
+
 
 - npm install
 - Adicionar senha no .env: sD62

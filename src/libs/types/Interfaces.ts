@@ -10,6 +10,16 @@ export interface IUserToken {
     escrever: string | undefined;
 }
 
+export interface IUserDtoInput {
+    nome: string;
+    email: string;
+    senha: string; 
+    grupo: string;
+    ler: string;
+    escrever: string;
+    dtAtualizacao: string;
+}
+
 
 // export interface IRequest extends Request {
 //     grupo: string;

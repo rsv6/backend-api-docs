@@ -2,11 +2,44 @@ import { Request, Response } from "express";
 
 import { UsuarioRepository } from "../repositories/Permissao.Repository";
 import { JWT } from "../services/JWT";
-import { IUserToken } from "../libs/types/Interfaces";
+import { IUserDtoInput, IUserToken } from "../libs/types/Interfaces";
+import { UsuarioModel } from "../models/Usuario.Model";
 
 export class UsuarioController {
 
     private static usuarioRepository = new UsuarioRepository();
+
+
+    public static async criarUsuario(req: Request, res: Response): Promise<Response> {
+
+        // Validar campo com zod:
+        const { nome, email, senha, grupo, ler, escrever } = req.body;
+
+        if (!nome || !email || !senha || !grupo || !ler || !escrever) {
+            return res.status(400).json({ message: "Campos Obrigatórios!"})
+        }
+
+        const data = new Date();
+        // const formattedDate = data.toISOString().slice(0, 19).replace('Z', ' ');
+        const formattedDate = data.toISOString()
+        
+        const usuarioDtoInput: IUserDtoInput = {
+            nome,
+            email,
+            senha,
+            grupo,
+            ler,
+            escrever,
+            dtAtualizacao: formattedDate
+        }
+
+        // Repository Usuario de criacao:
+        const usuario = await UsuarioController.usuarioRepository.criaUsuario(usuarioDtoInput);
+
+        console.log("usuario: ", usuario);
+
+        return res.status(201).json({ message: "Usuário criado!" });
+    }
 
     public static async signIn(req: Request, res: Response): Promise<Response> {
 

@@ -1,8 +1,57 @@
 import { PrismaClient } from "@prisma/client"
+import { IUserDtoInput } from "../libs/types/Interfaces";
 
 export class UsuarioRepository {
     
     private prisma: PrismaClient = new PrismaClient(); 
+
+    public async criaUsuario(usuarioDtoInput: IUserDtoInput): Promise<any> {
+        try {
+
+            console.log("usuarioDtoInput: ", usuarioDtoInput);
+
+            const resultUsuario = await this.prisma.$queryRaw`
+                INSERT INTO USUARIO (nome, email, senha, dtatualizacao)
+                VALUES (
+                    ${usuarioDtoInput.nome}, 
+                    ${usuarioDtoInput.email}, 
+                    ${usuarioDtoInput.senha},
+                    ${usuarioDtoInput.dtAtualizacao}
+                )
+            `;
+
+            const resultPegaIdUsuario = await this.prisma.uSUARIO.findFirst({
+                where: {
+                    email: usuarioDtoInput.email,
+                    senha: usuarioDtoInput.senha
+                }
+            })
+        
+            console.log("resultPegaUsuario: ", resultPegaIdUsuario?.id);
+
+            // valida grupo:
+
+            if (!resultPegaIdUsuario?.id) {
+                return false;
+            } 
+
+            const resultPermissao = await this.prisma.pERMISSAO_GRUPO.create({
+                data: {
+                    id_usuario: resultPegaIdUsuario?.id,
+                    id_grupo: Number(usuarioDtoInput.grupo),
+                    id_acesso: 2,
+                    dtatualizacao: usuarioDtoInput.dtAtualizacao
+                } 
+            })
+
+            console.log("resultPermissao: ", resultPermissao);
+        
+            return true;
+        } catch (error) {
+            console.log('Error exception Criacao: ', error);
+            return null;
+        }
+    }
 
     public async signIn(email: string, senha: string): Promise<any> {
         try {
@@ -29,7 +78,7 @@ export class UsuarioRepository {
             `
             return result;
         } catch (error) {
-            console.log('Error exception: ', error);
+            console.log('Error exception SignIn: ', error);
             return null;
         }
     }
@@ -52,4 +101,6 @@ export class UsuarioRepository {
             return null;
         }
     }
+
+    
 }
