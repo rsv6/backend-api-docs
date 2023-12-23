@@ -4,6 +4,7 @@
         "module": "commonjs",
         "outDir": "./dist",
         "rootDir": "./src",
+        "types": ["./src/libs/types/express.d.ts"],
         "strict": true,
         "esModuleInterop": true,
         "skipLibCheck": true
