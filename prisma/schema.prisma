@@ -8,37 +8,37 @@ datasource db {
 }
 
 model ACESSO {
-  id              Int               @id(map: "PK__ACESSO__3213E83F26D7A794") @default(autoincrement())
-  LER             String            @db.Char(1)
-  ESCREVER        String            @db.Char(1)
+  id              Int               @id(map: "PK__ACESSO__3213E83F7C55E228") @default(autoincrement())
+  ler             String            @db.Char(1)
+  escrever        String            @db.Char(1)
   PERMISSAO_GRUPO PERMISSAO_GRUPO[]
 }
 
 model GRUPO {
-  id              Int               @id(map: "PK__GRUPO__3213E83FFAFA0751") @default(autoincrement())
+  id              Int               @id(map: "PK__GRUPO__3213E83F72AAA23A") @default(autoincrement())
   nome            String            @db.VarChar(100)
-  descricao       String?           @db.VarChar(255)
+  descricao       String            @db.VarChar(255)
   PERMISSAO_GRUPO PERMISSAO_GRUPO[]
 }
 
 model PERMISSAO_GRUPO {
-  id            Int       @id(map: "PK__PERMISSA__3213E83FC76F29DD") @default(autoincrement())
+  id            Int      @id(map: "PK__PERMISSA__3213E83F2484DD74") @default(autoincrement())
   id_usuario    Int
   id_grupo      Int
   id_acesso     Int
-  dtcriacao     DateTime? @default(now(), map: "DF__PERMISSAO__dtcri__5070F446") @db.DateTime
-  dtatualizacao DateTime  @default(now(), map: "DF__PERMISSAO__dtatu__5165187F") @db.DateTime
-  ACESSO        ACESSO    @relation(fields: [id_acesso], references: [id], onUpdate: NoAction, map: "FK__PERMISSAO__id_ac__4F7CD00D")
-  GRUPO         GRUPO     @relation(fields: [id_grupo], references: [id], onUpdate: NoAction, map: "FK__PERMISSAO__id_gr__4E88ABD4")
-  USUARIO       USUARIO   @relation(fields: [id_usuario], references: [id], onUpdate: NoAction, map: "FK__PERMISSAO__id_us__4D94879B")
+  dtcriacao     DateTime @default(now(), map: "DF__PERMISSAO__dtcri__5BE2A6F2") @db.DateTime
+  dtatualizacao DateTime @db.DateTime
+  ACESSO        ACESSO   @relation(fields: [id_acesso], references: [id], onUpdate: NoAction, map: "FK__PERMISSAO__id_ac__4F7CD00D")
+  GRUPO         GRUPO    @relation(fields: [id_grupo], references: [id], onUpdate: NoAction, map: "FK__PERMISSAO__id_gr__4E88ABD4")
+  USUARIO       USUARIO  @relation(fields: [id_usuario], references: [id], onUpdate: NoAction, map: "FK__PERMISSAO__id_us__4D94879B")
 }
 
 model USUARIO {
-  id              Int               @id(map: "PK__USUARIO__3213E83F28F56686") @default(autoincrement())
+  id              Int               @id(map: "PK__USUARIO__3213E83F75829893") @default(autoincrement())
   nome            String            @db.VarChar(100)
   email           String            @db.VarChar(50)
   senha           String            @db.VarChar(255)
-  dtcriacao       DateTime?         @default(now(), map: "DF__USUARIO__dtcriac__47DBAE45") @db.DateTime
-  dtatualizacao   DateTime          @default(now(), map: "DF__USUARIO__dtatual__48CFD27E") @db.DateTime
+  dtcriacao       DateTime          @default(now(), map: "DF__USUARIO__dtcriac__5629CD9C") @db.DateTime
+  dtatualizacao   DateTime          @db.DateTime
   PERMISSAO_GRUPO PERMISSAO_GRUPO[]
 }

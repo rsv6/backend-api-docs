@@ -1,0 +1,5 @@
+## Manager Docs:
+
+
+- npm install
+- Adicionar senha no .env: *D62
