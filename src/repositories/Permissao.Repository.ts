@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client"
-import { IUserDtoInput } from "../libs/types/Interfaces";
+import { IUserDtoInput, IUserDtoOutput } from "../libs/types/Interfaces";
+import { UsuarioModel } from "../models/Usuario.Model";
 
 export class UsuarioRepository {
     
@@ -7,6 +8,8 @@ export class UsuarioRepository {
 
     public async criaUsuario(usuarioDtoInput: IUserDtoInput): Promise<any> {
         try {
+
+            // validar se ja existe email:
 
             console.log("usuarioDtoInput: ", usuarioDtoInput);
 
@@ -20,31 +23,39 @@ export class UsuarioRepository {
                 )
             `;
 
-            const resultPegaIdUsuario = await this.prisma.uSUARIO.findFirst({
-                where: {
-                    email: usuarioDtoInput.email,
-                    senha: usuarioDtoInput.senha
-                }
-            })
+            const resultPegaUsuario: IUserDtoOutput[] = await new UsuarioRepository().pegarUsuarios();
+
+            console.log("resultPegaUsuario: ", resultPegaUsuario)
+
+            const idUser = await resultPegaUsuario.find(u => u.email = usuarioDtoInput.email)
+
+            // const resultPegaUsuario = await this.prisma.uSUARIO.findFirst({
+            //     where: {
+            //         email: usuarioDtoInput.email,
+            //         senha: usuarioDtoInput.senha
+            //     }
+            // })
+
+            // const resultUsuarioPorLoginSenha = await resultPegaUsuario
         
-            console.log("resultPegaUsuario: ", resultPegaIdUsuario?.id);
+            // console.log("resultPegaUsuario: ", resultPegaUsuario?.id);
 
             // valida grupo:
 
-            if (!resultPegaIdUsuario?.id) {
+            if (!idUser?.id) {
                 return false;
             } 
 
             const resultPermissao = await this.prisma.pERMISSAO_GRUPO.create({
                 data: {
-                    id_usuario: resultPegaIdUsuario?.id,
+                    id_usuario: idUser.id,
                     id_grupo: Number(usuarioDtoInput.grupo),
                     id_acesso: 2,
                     dtatualizacao: usuarioDtoInput.dtAtualizacao
                 } 
             })
 
-            console.log("resultPermissao: ", resultPermissao);
+            console.log("resultPermissao: ", "resultPermissao");
         
             return true;
         } catch (error) {
@@ -97,7 +108,26 @@ export class UsuarioRepository {
 
             return result;
         } catch(error) {
-            console.log('Error exception: ', error);
+            console.log('Error Exception pegaUsuarios: ', error);
+            return null;
+        }
+    }
+
+    public async pegaUsuarioPorId(id: number): Promise<any> {
+        try {
+            const result: UsuarioModel = await this.prisma.uSUARIO.findUnique({
+                where: {
+                    id
+                }
+            }) as UsuarioModel
+
+            const { senha, ...rest } = result;
+
+
+
+            return rest;
+        } catch (error) {
+            console.log('Error Exception pegaUsuarioPorId: ', error);
             return null;
         }
     }

@@ -10,7 +10,7 @@ export class UsuarioController {
     private static usuarioRepository = new UsuarioRepository();
 
 
-    public static async criarUsuario(req: Request, res: Response): Promise<Response> {
+    public static async criaUsuario(req: Request, res: Response): Promise<Response> {
 
         // Validar campo com zod:
         const { nome, email, senha, grupo, ler, escrever } = req.body;
@@ -92,12 +92,28 @@ export class UsuarioController {
 
     public static async pegaUsuarios(req: Request, res: Response): Promise<Response> {
 
-        var usuarios = await UsuarioController.usuarioRepository.pegarUsuarios();
+        const usuarios = await UsuarioController.usuarioRepository.pegarUsuarios();
 
+        // Validar usuarios:
         console.log("REQ GRUPO: ", req.grupo);
 
         return res.status(200).json(usuarios);
 
         // return res.status(200).json({});
+    }
+
+    public static async pegaUsuarioPorId(req: Request, res: Response): Promise<Response> {
+
+        const { id } = req.params;
+
+        console.log("ID: ", id)
+        // validar campos com zod
+
+        // validar permissao grupo:
+        const usuario = await UsuarioController.usuarioRepository.pegaUsuarioPorId(Number(id))
+        console.log("Usuario: ", usuario);
+        
+        // validar usuario:
+        return res.status(200).json(usuario);
     }
 }
