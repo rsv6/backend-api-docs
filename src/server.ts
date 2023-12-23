@@ -1,17 +1,22 @@
-import express, { Router } from 'express';
-import { UsuarioController } from './controllers/Permissao.Controller';
-import { JWT } from './services/JWT';
+import express from 'express';
+
 import { arrG } from './services/validaAcesso';
+import { AppRouter } from './routes/AppRouter';
 
 const app = express();
 app.use(express.json());
 
-arrG;
+// arrG;
 
-app.use(
-    Router()
-        .post("/user",  UsuarioController.signIn)
-        .get("/user", new JWT().verificaToken, UsuarioController.pegaUsuarios)
-);
+app.use(new AppRouter().start());
+
+// app.use('/app/static', function (req, res, next) {
+//     if (req.method !== 'get') {
+//       next();
+//       return;
+//     }
+//     res.sendFile(__dirname + '/assets' + req.path);
+//   });
+
 
 app.listen(3000, () => console.log("Server is running 3000"));  
