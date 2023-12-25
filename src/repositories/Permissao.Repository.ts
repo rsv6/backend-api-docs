@@ -9,11 +9,22 @@ export class UsuarioRepository {
     public async criaUsuario(usuarioDtoInput: IUserDtoInput): Promise<any> {
         try {
 
-            // validar se ja existe email:
+            var resultListaUsuarios: IUserDtoOutput[] = await new UsuarioRepository().pegarUsuarios();
+            
+            const validaEmail = resultListaUsuarios.some(u => u.email == usuarioDtoInput.email);
+            resultListaUsuarios.splice(0, resultListaUsuarios.length);
 
-            console.log("usuarioDtoInput: ", usuarioDtoInput);
+            if (validaEmail) {
 
-            const resultUsuario = await this.prisma.$queryRaw`
+                console.log(`E-mail '${usuarioDtoInput.email}' já está em uso!`);
+                return {
+                    error: true,
+                    data: [],
+                    message: `E-mail '${usuarioDtoInput.email}' já está em uso!`
+                }
+            }
+
+            await this.prisma.$queryRaw`
                 INSERT INTO USUARIO (nome, email, senha, dtatualizacao)
                 VALUES (
                     ${usuarioDtoInput.nome}, 
@@ -23,30 +34,23 @@ export class UsuarioRepository {
                 )
             `;
 
-            const resultPegaUsuario: IUserDtoOutput[] = await new UsuarioRepository().pegarUsuarios();
-
-            console.log("resultPegaUsuario: ", resultPegaUsuario)
-
-            const idUser = await resultPegaUsuario.find(u => u.email = usuarioDtoInput.email)
-
-            // const resultPegaUsuario = await this.prisma.uSUARIO.findFirst({
-            //     where: {
-            //         email: usuarioDtoInput.email,
-            //         senha: usuarioDtoInput.senha
-            //     }
-            // })
-
-            // const resultUsuarioPorLoginSenha = await resultPegaUsuario
-        
-            // console.log("resultPegaUsuario: ", resultPegaUsuario?.id);
+            resultListaUsuarios = await new UsuarioRepository().pegarUsuarios();
+            const idUser = await resultListaUsuarios.find(u => u.email == usuarioDtoInput.email);
 
             // valida grupo:
 
+            
             if (!idUser?.id) {
-                return false;
+
+                console.log(`Erro ao tentar cadastrar usuario. Tente mais tarde!`);
+                return {
+                    error: true,
+                    data: [],
+                    message: `Erro ao tentar cadastrar usuario. Tente mais tarde!`
+                }
             } 
 
-            const resultPermissao = await this.prisma.pERMISSAO_GRUPO.create({
+            await this.prisma.pERMISSAO_GRUPO.create({
                 data: {
                     id_usuario: idUser.id,
                     id_grupo: Number(usuarioDtoInput.grupo),
@@ -55,12 +59,21 @@ export class UsuarioRepository {
                 } 
             })
 
-            console.log("resultPermissao: ", "resultPermissao");
+            console.log(`Usuario ${idUser.nome} cadastrado com sucesso!`);
         
-            return true;
+            return {
+                error: false,
+                data: [],
+                message: `Usuario ${idUser.nome} cadastrado com sucesso!`
+            }
         } catch (error) {
+            
             console.log('Error exception Criacao: ', error);
-            return null;
+            return {
+                error: null,
+                data: [],
+                message: `Error exception Criacao: ${error}`
+            }
         }
     }
 
@@ -122,8 +135,6 @@ export class UsuarioRepository {
             }) as UsuarioModel
 
             const { senha, ...rest } = result;
-
-
 
             return rest;
         } catch (error) {

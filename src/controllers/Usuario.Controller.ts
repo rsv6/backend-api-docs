@@ -9,21 +9,19 @@ export class UsuarioController {
 
     private static usuarioRepository = new UsuarioRepository();
 
-
     public static async criaUsuario(req: Request, res: Response): Promise<Response> {
 
-        // Validar campo com zod:
         const { nome, email, senha, grupo, ler, escrever } = req.body;
-
+        
+        // Validar campo com zod:
         if (!nome || !email || !senha || !grupo || !ler || !escrever) {
             return res.status(400).json({ message: "Campos Obrigatórios!"})
         }
 
         const data = new Date();
-        // const formattedDate = data.toISOString().slice(0, 19).replace('Z', ' ');
         const formattedDate = data.toISOString()
-        
-        const usuarioDtoInput: IUserDtoInput = {
+
+        const usuario = await UsuarioController.usuarioRepository.criaUsuario({
             nome,
             email,
             senha,
@@ -31,14 +29,19 @@ export class UsuarioController {
             ler,
             escrever,
             dtAtualizacao: formattedDate
+        });
+
+        if (!usuario.error){
+
+            return res.status(201).json(usuario);
+        }
+        
+        if (usuario.error == null) {
+            return res.status(500).json(usuario);
         }
 
-        // Repository Usuario de criacao:
-        const usuario = await UsuarioController.usuarioRepository.criaUsuario(usuarioDtoInput);
-
-        console.log("usuario: ", usuario);
-
-        return res.status(201).json({ message: "Usuário criado!" });
+        console.log("Usuario: ", usuario);
+        return res.status(403).json(usuario);
     }
 
     public static async signIn(req: Request, res: Response): Promise<Response> {
