@@ -9,3 +9,4 @@
 
 - npm install
 - Adicionar senha no .env: sD62
+
