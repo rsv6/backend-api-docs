@@ -46,6 +46,10 @@ export class JWT {
 
             // Implementar atribuir propriedade em request:
             req.grupo = result.grupo;
+            req.ler = result.ler;
+            req.escrever = result.escrever;
+            req.autenticado = true;
+            req.autorizado = false;
 
             console.log("Result: ", result.grupo);
             next();

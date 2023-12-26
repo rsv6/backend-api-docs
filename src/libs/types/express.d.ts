@@ -2,7 +2,11 @@
 
 declare namespace Express {
     export interface Request {
-        grupo?: string
+        grupo?: string;
+        ler?: string;
+        escrever?: string;
+        autenticado?: boolean;
+        autorizado?: boolean;
     }
 }
 
