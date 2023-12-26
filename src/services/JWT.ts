@@ -53,7 +53,6 @@ export class JWT {
 
             console.log("Result: ", result.grupo);
             next();
-            // return res.status(200).json({ result });
 
         } catch (error) {
             console.log("Error Exception verificaToken: ", error);

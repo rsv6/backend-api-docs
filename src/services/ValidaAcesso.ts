@@ -2,6 +2,11 @@ import { NextFunction, Request, Response } from "express";
 import { IGruposAcessos } from "../libs/types/Interfaces";
 import { GrupoRepository } from "../repositories/Grupo.Repository";
 
+// type urlRotasProps = {
+//     url: string,
+
+// }
+
 export class ValidaAcesso {
 
     private static grupoRepository = new GrupoRepository();
@@ -9,6 +14,8 @@ export class ValidaAcesso {
     public async validaPermissaoGrupo(req: Request, res: Response, next: NextFunction): Promise<any>{
         try {
             const listaPermissaoGrupo: IGruposAcessos[] = await ValidaAcesso.grupoRepository.pegaGrupoAcesso();
+
+            const metodoHttp = req.method
 
             const permissao = { 
                 grupo: req.grupo,
@@ -24,25 +31,33 @@ export class ValidaAcesso {
 
             console.log("permissao do usuario: ", permissaoUsuario);
 
-            console.log("req.url: ", req.url.split('/')[2]);
-            
-            if ("/usuario" == req.url) {
+            // console.log("req.url: ", req.url.split('/')[2]);
 
-            } 
-
-            if ("/usuario/"+req.url.split('/')[2]){
-
+            if (!permissaoUsuario) {
+                
+                console.log("Permissao não encontrada!");
+                return res.status(404).json({
+                    message: "Permissao não encontrada"
+                });
             }
 
-            if ("/")
+            const rotasPermissoes = [
+                { metodo: "GET", url: "/usuario", grupo: "TI", ler: "S", escrever: "N" },
+                { metodo: "GET", url: "/usuario/"+req.url.split('/')[2], grupo: "TI", ler: "S", escrever: "S" },
+                { metodo: "POST", url: "/usuario/criar", grupo: "TI", ler: "S", escrever: "S" },
+                { metodo: "POST", url: "/usuario", grupo: "TI", ler: "S", escrever: "S" },
+                { metodo: "GET", url: "/GRUPO", grupo: "TI", ler: "S", escrever: "S" },
 
+            ]
+
+            rotasPermissoes.map(rp => {
+                if (metodoHttp == "GET" && req.url == "/usuario")
+            })
 
             next();
         } catch (error) {
             console.log('Error exception valida permissao grupo: ', error);
-            return res.status(404).json({
-                message: "Permissao não encontrada"
-            });
+            return null;
         }
     }
 }
