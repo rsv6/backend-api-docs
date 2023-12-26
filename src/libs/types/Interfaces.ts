@@ -26,7 +26,16 @@ export interface IUserDtoOutput {
     dtatualizacao: string;
 };
 
+export interface IGruposAcessosDtoOut {
+    idGrupo?: number;
+    idAcesso?: number;
+    grupo?: string;
+    ler?: string;
+    escrever?: string;
+}
 
-// export interface IRequest extends Request {
-//     grupo: string;
-// }
+export interface IGruposAcessos {
+    grupo?: string;
+    ler?: string;
+    escrever?: string;
+}

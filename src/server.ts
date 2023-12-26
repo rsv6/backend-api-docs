@@ -1,12 +1,11 @@
 import express from 'express';
 
-import { arrG } from './services/validaAcesso';
+
 import { AppRouter } from './routes/AppRouter';
 
 const app = express();
 app.use(express.json());
 
-// arrG;
 
 app.use(new AppRouter().start());
 

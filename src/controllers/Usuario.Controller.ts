@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
 
-import { UsuarioRepository } from "../repositories/Permissao.Repository";
+import { UsuarioRepository } from "../repositories/Usuario.Repository";
 import { JWT } from "../services/JWT";
 import { IUserDtoInput, IUserToken } from "../libs/types/Interfaces";
 import { UsuarioModel } from "../models/Usuario.Model";
+import { ValidaAcesso } from "../services/ValidaAcesso";
 
 export class UsuarioController {
 
@@ -17,6 +18,8 @@ export class UsuarioController {
         if (!nome || !email || !senha || !grupo || !ler || !escrever) {
             return res.status(400).json({ message: "Campos Obrigatórios!"})
         }
+
+        // const resultValidaAcessoGrupo = await new ValidaAcesso().validaPermissaoGrupo({grupo, ler, escrever})
 
         const data = new Date();
         const formattedDate = data.toISOString()
